@@ -1,0 +1,88 @@
+﻿@model IEnumerable<MVC1.Areas.Admin.Models.OrdDetailModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+<link href="~/Content/StyleTest.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<div>
+    <div class="col-md-6 pull-left" style="padding-bottom:5px">
+        <h2>Chi tiết hóa đơn</h2>
+        @*<input class="form-control" id="myInput" style="margin-bottom:10px" type="text" placeholder="Search..">*@
+        @Html.TextBox("Searching")   <input type="submit" value="Searching" />
+    </div>
+    <div class="col-md-6 pull-right" style="padding-top:50px;padding-bottom:15px">
+        @*<button type="button" class="btn btn-info" onclick="functionUpdate()">Add New</button>*@
+        @*<button type="button" class="btn btn-primary" id="btnExport">Export To Excel</button>*@
+        <d class="tesst">
+            @*@Html.ActionLink("ExportToExcel", "ExportToExcel", "Catalog")*@
+        </d>
+    </div>
+    <table class="table table-bordered table-striped table-hover" id="tblCustomers">
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Tên sản phẩm
+            </th>
+            <th>
+                Ảnh sản phẩm
+            </th>
+            <th>
+                Giá  bán
+            </th>
+            @*<th>
+                Giảm giá
+            </th>*@
+            <th>
+                Số lượng
+            </th>
+            <th>
+                Tổng tiền
+            </th>
+            <th>
+                Trạng thái
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Oders_id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product_name)
+            </td>
+            <td>
+                <img src="@item.Product_image" width="150" />
+            </td>
+            <td>
+                $@Html.DisplayFor(modelItem => item.Price)
+            </td>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.Product_Discount)%
+            </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.Product_number)
+            </td>
+            <td>
+                $@Html.DisplayFor(modelItem => item.Amount)
+            </td>
+            @if (item.Ordetais_Status == true)
+            {
+                <td style="color:forestgreen">Đã xác nhận</td>
+            }
+            else
+            {
+                <td style="color:orangered">Chưa duyệt ...</td>
+            }
+        </tr>
+        }
+
+    </table>
+</div>

@@ -1,0 +1,253 @@
+﻿@model IEnumerable<MVC1.Areas.Admin.Models.SupplierModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+<link href="~/Content/StyleTest.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+@*Form hiển thị*@
+<div>
+    <div class="row">
+        <div class="col-md-6 pull-left">
+            <h2>Danh sách nhà cung cấp</h2>
+            @*<input class="form-control" id="myInput" style="margin-bottom:10px" type="text" placeholder="Search..">*@
+            @Html.TextBox("Searching") <input type="submit" value="Searching" />
+        </div>
+        <div class="col-md-6 pull-right" style="padding-top:50px;padding-bottom:15px">
+            <button type="button" class="btn btn-info" onclick="functionUpdate()">Add New</button>
+            @*<button type="button" class="btn btn-primary" id="btnExport">Export To Excel</button>*@
+            <d class="tesst">
+                @*@Html.ActionLink("ExportToExcel", "ExportToExcel", "Catalog")*@
+            </d>
+        </div>
+    </div>
+    <table class="table table-bordered table-striped table-hover" id="tblCustomers">
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Tên
+            </th>
+            <th>
+                Địa chỉ
+            </th>
+            <th>
+                Số điện thoại
+            </th>
+            <th>
+                Số FAX
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Trang Thái
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Supplier_id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Supplier_name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Supplier_address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Supplier_phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Supplier_fax)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Supplier_email)
+                </td>
+                @if (item.Supplier_Status == true)
+                {
+                    <td style="color:forestgreen">Hoạt động</td>
+                }
+                else
+                {
+                    <td style="color:orangered">Khóa</td>
+                }
+                <td>
+                    <button type="button" class="btn btn-danger" onclick="ShowEdit(@item.Supplier_id)">Edit</button>
+                    <button type="button" class="btn btn-warning" onclick="Delele(@item.Supplier_id)">Xóa</button>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+@* Form Action *@
+<div id="AddAdmin" class="AddAdmin" style="display:none">
+    <div class="update-Admin">
+        <h3 id="titleAddnew">Add New</h3>
+        <h3 id="titleEdit" style="display:none">Edit</h3>
+        <table class="tbAdmin">
+            <tr>
+                <td>
+                    <label for="Supplier_id">ID</label>
+                    <input type="text" class="form-control" id="Supplier_id" placeholder="" disabled="disabled" />
+                </td>
+                <td>
+                    <label for="Supplier_name">Tên</label>
+                    <input type="text" class="form-control" id="Supplier_name" placeholder="Tên" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Supplier_phone">Số điện thoại</label>
+                    <input type="text" class="form-control" id="Supplier_phone" placeholder="Số điện thoại" />
+                </td>
+                <td>
+                    <label for="Supplier_fax">Số Fax</label>
+                    <input type="text" class="form-control" id="Supplier_fax" placeholder="Số Fax" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Supplier_address">Địa chỉ</label>
+                    <input type="text" class="form-control" id="Supplier_address" placeholder="Địa chỉ" />
+                </td>
+                <td>
+                    <label for="Supplier_email">Email</label>
+                    <input type="text" class="form-control" id="Supplier_email" placeholder="Email" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Supplier_Status">Trạng Thái</label>
+                    <select id="Supplier_Status" style="padding: 5px;width: 120px;border-radius: 5px;">
+                        <option id="opTrue" value="true">Hoạt động</option>
+                        <option id="opFalse" value="false">Khóa</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button class="btn btn-info" id="Addnew" onclick="return Add()">Thêm Mới</button>
+                    <button class="btn btn-danger" id="Editnew" onclick="return Edit()" style="display:none;">Edit</button>
+                </td>
+                <td>
+                    <button class="btn btn-xam" onclick="funcBack()">Hủy</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script>
+    function functionUpdate() {
+        document.getElementById("AddAdmin").style.display = "block";
+    }
+    function funcBack() {
+        document.getElementById("AddAdmin").style.display = "none";
+    }
+    function Add() {
+        var empObj = {
+            //Supplier_id: $('#Supplier_id').val(),
+            Supplier_name: $('#Supplier_name').val(),
+            Supplier_address: $('#Supplier_address').val(),
+            Supplier_phone: $('#Supplier_phone').val(),
+            Supplier_fax: $('#Supplier_fax').val(),
+            Supplier_email: $('#Supplier_email').val(),
+            Supplier_Status: $('#Supplier_Status').val(),
+        };
+        $.ajax({
+            url: "/Admin/Supplier/Add",
+            contentType: "application/json;charset=UTF-8",
+            type: "GET",
+            data: empObj,
+            dataType: "json",
+            success: function (result) {
+                alert("Thêm mới thành công !");
+                location.reload("AddAdmin");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+        //document.getElementById("updateAdmin").style.display = "none";
+    }
+    function ShowEdit(ID) {
+        document.getElementById('AddAdmin').style.display = "block";
+        $('#Editnew').show();
+        $('#Addnew').hide();
+        $('#titleEdit').show();
+        $('#titleAddnew').hide();
+        $.ajax({
+            url: "/Admin/Supplier/ShowEdit/" + ID,
+            type: "GET",
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (result) {
+                    $('#Supplier_id').val(result.Supplier_id),
+                    $('#Supplier_name').val(result.Supplier_name),
+                    $('#Supplier_address').val(result.Supplier_address),
+                    $('#Supplier_phone').val(result.Supplier_phone),
+                    $('#Supplier_fax').val(result.Supplier_fax),
+                    $('#Supplier_email').val(result.Supplier_email),
+                    result.Supplier_Status === true ? document.getElementById('opTrue').selected = "selected" : document.getElementById('opFalse').selected = "selected",
+                    console.log(result.Supplier_Status)
+            }, error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+    function Edit() {
+        $('#Editnew').show();
+        $('#Addnew').hide();
+        var empObj = {
+            Supplier_id: $('#Supplier_id').val(),
+            Supplier_name: $('#Supplier_name').val(),
+            Supplier_address: $('#Supplier_address').val(),
+            Supplier_phone: $('#Supplier_phone').val(),
+            Supplier_fax: $('#Supplier_fax').val(),
+            Supplier_email: $('#Supplier_email').val(),
+            Supplier_Status: $('#Supplier_Status').val()
+        };
+        $.ajax({
+            url: "/Admin/Supplier/Edit/",
+            contentType: "application/json;charset=UTF-8;",
+            type: "GET",
+            data: empObj,
+            dataType: "json",
+            success: function (result) {
+
+                alert("Sửa bản ghi thành công !");
+                location.reload("AddAdmin");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+    function Delele(ID) {
+        var ans = confirm("Bạn có chắc chắn muốn xóa dòng này không ?");
+        if (ans) {
+            $.ajax({
+                url: "/Admin/Supplier/Delete/" + ID,
+                type: "GET",
+                contentType: "application/json;charset=UTF-8",
+                dataType: "json",
+                success: function (result) {
+                    alert("Xóa bản ghi thành công !");
+                    location.reload("tblCustomers");
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+</script>

@@ -1,0 +1,206 @@
+﻿@model IEnumerable<MVC1.Areas.Admin.Models.OrderModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+<link href="~/Content/StyleTest.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<div>
+    <div class="col-md-6 pull-left" style="padding-bottom:5px">
+        <h2>Danh sách hóa đơn</h2>
+        @*<input class="form-control" id="myInput" style="margin-bottom:10px" type="text" placeholder="Search..">*@
+        @Html.TextBox("Searching")   <input type="submit" value="Searching" />
+    </div>
+    <div class="col-md-6 pull-right" style="padding-top:50px;padding-bottom:15px">
+        <button type="button" class="btn btn-info" onclick="functionUpdate()">Add New</button>
+        @*<button type="button" class="btn btn-primary" id="btnExport">Export To Excel</button>*@
+        <d class="tesst">
+            @*@Html.ActionLink("ExportToExcel", "ExportToExcel", "Catalog")*@
+        </d>
+    </div>
+    <table class="table table-bordered table-striped table-hover" id="tblCustomers">
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Nhân viên
+            </th>
+            <th>
+                Khách hàng
+            </th>
+            <th>
+                Ngày đặt
+            </th>
+            @*<th>
+                Ngày chuyển
+            </th>*@
+            <th>
+                Địa chỉ
+            </th>
+            <th>
+                Trạng thái
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Orders_id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ten)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Customer_name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Order_date)
+                </td>
+                @*<td>
+                    @Html.DisplayFor(modelItem => item.Delivery_date)
+                </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.Adress)
+                </td>
+                @if (item.Order_Status == true)
+                {
+                    <td style="color:forestgreen">Đã xác nhận</td>
+                }
+                else
+                {
+                    <td style="color:orangered">Chưa duyệt ...</td>
+                }
+                <td>
+                    <button type="button" class="btn btn-danger" onclick="Access(@item.Orders_id)">Xác Nhận</button>
+                    <button type="button" class="btn btn-warning" onclick="Delete(@item.Orders_id)">Xóa</button>
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+
+<div id="AddAdmin" class="AddAdmin" style="display:none">
+    <div class="update-Admin">
+        <h3 id="titleAddnew">Add New</h3>
+        <h3 id="titleEdit" style="display:none">Edit</h3>
+        <table class="tbAdmin">
+            <tr>
+                <td>
+                    <label for="Customer_id">ID</label>
+                    <input type="text" class="form-control" id="Customer_id" placeholder="ID khách hàng"/>
+                </td>
+                <td>
+                    <label for="Admin_id">ID nhân viên</label>
+                    <input type="text" class="form-control" id="Admin_id" placeholder="Id nhân viên" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Order_date">Ngày đặt</label>
+                    <input type="text" class="form-control" id="Order_date" placeholder="Ngày đặt" />
+                </td>
+                <td>
+                    <label for="Adress">Địa chỉ</label>
+                    <input type="text" class="form-control" id="Adress" placeholder="Địa chỉ" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Product_id">Id sản phẩm</label>
+                    <input type="text" class="form-control" id="Product_id" placeholder="Id sản phẩm" />
+                </td>
+                <td>
+                    <label for="Product_number">Số lượng</label>
+                    <input type="text" class="form-control" id="Product_number" placeholder="Số lượng" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button class="btn btn-info" id="Addnew" onclick="return Add()">Thêm Mới</button>
+                    <button class="btn btn-danger" id="Editnew" onclick="return Edit()" style="display:none;">Edit</button>
+                </td>
+                <td>
+                    <button class="btn btn-xam" onclick="funcBack()">Hủy</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script>
+    function functionUpdate() {
+        document.getElementById("AddAdmin").style.display = "block";
+    }
+    function funcBack() {
+        document.getElementById("AddAdmin").style.display = "none";
+    }
+    function Add() {
+        var empObj = {
+            Customer_id: $('#Customer_id').val(),
+            Admin_id: $('#Admin_id').val(),
+            Order_date: $('#Order_date').val(),
+            Adress: $('#Adress').val(),
+            Product_id: $('#Product_id').val(),
+            Product_number: $('#Product_number').val()
+        };
+        $.ajax({
+            url: "/Admin/Order/Add",
+            contentType: "application/json;charset=UTF-8",
+            type: "GET",
+            data: empObj,
+            datatype: "json",
+            success: function (result) {
+                alert("Thêm bản ghi thành công !");
+                location.reload("AddAdmin");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        })
+    }
+    function Access(ID) {
+        var ans = confirm("Bạn có chắc chắn muốn xác nhận dòng này không ?");
+        if (ans) {
+            $.ajax({
+                url: "/Admin/Order/Access/" + ID,
+                type: "POST",
+                contentType: "application/json;charset=UTF-8",
+                dataType: "json",
+                success: function (result) {
+                    alert("Xác nhận bản ghi thành công!");
+                    location.reload("tblCustomers");
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+    function Delete(ID) {
+        var ans = confirm("Bạn có chắc chắn muốn xóa dòng này không ?");
+        if (ans) {
+            $.ajax({
+                url: "/Admin/Order/Delete/" + ID,
+                type: "POST",
+                contentType: "application/json;charset=UTF-8",
+                dataType: "json",
+                success: function (result) {
+                    alert("Xóa bản ghi thành công !");
+                    location.reload("tblCustomers");
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+</script>

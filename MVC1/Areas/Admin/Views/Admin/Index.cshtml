@@ -1,0 +1,346 @@
+﻿@model IEnumerable<MVC1.Areas.Admin.Models.AdminModel>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+<link href="~/Content/StyleTest.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+
+@using (Html.BeginForm("Index", "Admin", FormMethod.Get))
+{
+    <div>
+        <div class="col-md-6 pull-left">
+            <h2>Danh sách Adminstrator</h2>
+            @*<input class="form-control" id="myInput" style="margin-bottom:10px" type="text" placeholder="Search..">*@
+            @Html.TextBox("Searching")   <input type="submit" value="Searching" />
+        </div>
+        <div class="col-md-6 pull-right" style="padding-top:50px;padding-bottom:15px">
+            <button type="button" class="btn btn-info" onclick="functionUpdate()">Add New</button>
+            @*<button type="button" class="btn btn-primary" id="btnExport">Export To Excel</button>*@
+            <d class="tesst">
+                @*@Html.ActionLink("ExportToExcel", "ExportToExcel", "Catalog")*@
+            </d>
+        </div>
+        <table class="table table-bordered table-striped table-hover" id="tblCustomers">
+            <thead>
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Quyền
+                    </th>
+                    @*<th>
+                            Họ
+                        </th>*@
+                    <th>
+                        Tên
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                    @*<th>
+                            Mật khẩu
+                        </th>*@
+                    <th>
+                        Địa chỉ
+                    </th>
+                    <th>
+                        Ngày sinh
+                    </th>
+                    <th>
+                        Giới Tính
+                    </th>
+                    <th>
+                        Lương
+                    </th>
+                    <th>
+                        Trạng thái
+                    </th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count() == 0)
+                {
+                    <tr>
+                        <td colspan="10" style="text-align:center;color:red;font:bold;font-size:16px">
+                            Bạn nhập thông tin không chính xác !!!
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr class="LoadData" id="row-@item.Admin_id">
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Admin_id)
+                            </td>
+                            <td>
+                                @*@Html.DisplayFor(modelItem => item.Permission_id)*@
+
+                                @(item.Permission_id == 1 ? "Quản Trị Viên" : (item.Permission_id == 2 ? "Nhân Viên" : "Quản Lý"))
+                            </td>
+                            @*<td>
+                                    @Html.DisplayFor(modelItem => item.Frist_name)
+                                </td>*@
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Last_name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            @*<td>
+                                    @Html.DisplayFor(modelItem => item.PassW)
+                                </td>*@
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Addres)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.birthday)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Gender)
+                            </td>
+                            <td>
+                                $@Html.DisplayFor(modelItem => item.Salary)
+                            </td>
+                            @if (item.Admin_Status == true)
+                            {
+                                <td style="color:forestgreen">Hoạt động</td>
+                            }
+                            else
+                            {
+                                <td style="color:orangered">Khóa</td>
+                            }
+                            <td>
+                                <button type="button" class="btn btn-danger" onclick="ShowEdit(@item.Admin_id)">Edit</button>
+                                <button type="button" class="btn btn-warning" onclick="Delele(@item.Admin_id)">Delete</button>
+                            </td>
+                        </tr>
+                        @*<tr>
+                                <td colspan="10">
+                                    <ul class="pagination">
+                                        @for (int i = 1; i <= item.Tong; i++)
+                                        {
+                                            <li>@Html.ActionLink(i.ToString(), "Index/currPage="+i, "Admin")</li>
+                                        }
+                                    </ul>
+                                </td>
+                            </tr>*@
+                    }
+                }
+            </tbody>
+        </table>
+
+    </div>
+}
+<div id="AddAdmin" class="AddAdmin" style="display:none">
+    <div class="update-Admin">
+        <h3 id="titleAddnew">Add New</h3>
+        <h3 id="titleEdit" style="display:none">Edit</h3>
+        <table class="tbAdmin">
+            <tr>
+                <td>
+                    <label for="Admin_id">ID</label>
+                    <input type="text" class="form-control" id="Admin_id" placeholder="" disabled="disabled" />
+                </td>
+                <td>
+                    <label for="Permission_id">Chức Vụ </label><br />
+                    @*<input type="text" class="form-control" id="Permission_id" placeholder="Quyền" />*@
+                    <select id="Permission_id" style="padding-left: 8px;width: 196px;border-radius: 5px;height:32px">
+                        <option value="1">Quản Trị Viên</option>
+                        <option value="2">Nhân Viên</option>
+                        <option value="3">Quản Lý</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Frist_name">Họ</label>
+                    <input type="text" class="form-control" id="Frist_name" placeholder="Họ" />
+                </td>
+                <td>
+                    <label for="Last_name">Tên</label>
+                    <input type="text" class="form-control" id="Last_name" placeholder="Tên" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Email">Email</label>
+                    <input type="text" class="form-control" id="Email" placeholder="Email" />
+                </td>
+                <td>
+                    <label for="PassW">Mật khẩu</label>
+                    <input type="password" class="form-control" id="PassW" placeholder="Mật khẩu" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Addres">Địa chỉ</label>
+                    <input type="text" class="form-control" id="Addres" placeholder="Địa chỉ" />
+                </td>
+                <td>
+                    <label for="birthday">Ngày sinh</label>
+                    <input type="text" class="form-control" id="birthday" placeholder="Ngày sinh" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Gender">Giới tính</label>
+                    <input type="text" class="form-control" id="Gender" placeholder="Giới tính" />
+                </td>
+                <td>
+                    <label for="Salary">Lương</label>
+                    <input type="text" class="form-control" id="Salary" placeholder="Lương" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Admin_Status">Trạng Thái</label>
+                    <select id="Admin_Status" style="padding: 5px;width: 120px;border-radius: 5px;">
+                        <option id="opTrue" value="true">Hoạt động</option>
+                        <option id="opFalse" value="false">Khóa</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button class="btn btn-info" id="Addnew" onclick="return Add()">Thêm Mới</button>
+                    <button class="btn btn-danger" id="Editnew" onclick="return Edit()" style="display:none;">Edit</button>
+                </td>
+                <td>
+                    <button class="btn btn-xam" onclick="funcBack()">Hủy</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script>
+    function functionUpdate() {
+        document.getElementById("AddAdmin").style.display = "block";
+    }
+    function funcBack() {
+        document.getElementById("AddAdmin").style.display = "none";
+    }
+    function Add() {
+        var empObj = {
+            //Admin_id: $('#Admin_id').val(),
+            Permission_id: $('#Permission_id').val(),
+            Frist_name: $('#Frist_name').val(),
+            Last_name: $('#Last_name').val(),
+            Email: $('#Email').val(),
+            PassW: $('#PassW').val(),
+            Addres: $('#Addres').val(),
+            birthday: $('#birthday').val(),
+            Gender: $('#Gender').val(),
+            Salary: $('#Salary').val(),
+            Admin_Status: $('#Admin_Status').val()
+        };
+        $.ajax({
+            url: "/Admin/Admin/Add",
+            contentType: "application/json;charset=UTF-8",
+            type: "GET",
+            data: empObj,
+            dataType: "json",
+            success: function (result) {
+                alert("Thêm mới thành công !");
+                location.reload("AddAdmin");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+        //document.getElementById("updateAdmin").style.display = "none";
+    }
+    function ShowEdit(ID) {
+        document.getElementById('AddAdmin').style.display = "block";
+        $('#Editnew').show();
+        $('#Addnew').hide();
+        $('#titleEdit').show();
+        $('#titleAddnew').hide();
+        $.ajax({
+            url: "/Admin/Admin/ShowEdit/" + ID,
+            type: "GET",
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (result) {
+                var dt = new Date(parseInt(result.birthday.replace('/Date(', '')));
+                var dtFinal = AddLeadingZezos(dt.getMonth() + 1, 2) + '/' +
+                    AddLeadingZezos(dt.getDate(), 2) + '/' +
+                    AddLeadingZezos(dt.getFullYear(), 4);
+                $('#Admin_id').val(result.Admin_id),
+                    $('#Permission_id').val(result.Permission_id),
+                    $('#Frist_name').val(result.Frist_name),
+                    $('#Last_name').val(result.Last_name),
+                    $('#Email').val(result.Email),
+                    $('#PassW').val(result.PassW),
+                    $('#Addres').val(result.Addres),
+                    $('#birthday').val(dtFinal),
+                    $('#Gender').val(result.Gender),
+                    $('#Salary').val(result.Salary),
+                    result.Admin_Status === true ? document.getElementById('opTrue').selected = "selected" : document.getElementById('opFalse').selected = "selected",
+                    console.log(result.Admin_Status)
+            }, error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+    function AddLeadingZezos(number, Size) {
+        var s = "0000" + number;
+        return s.substr(s.length - Size);
+    }
+    function Edit() {
+        $('#Editnew').show();
+        $('#Addnew').hide();
+        var empObj = {
+            Admin_id: $('#Admin_id').val(),
+            Permission_id: $('#Permission_id').val(),
+            Frist_name: $('#Frist_name').val(),
+            Last_name: $('#Last_name').val(),
+            Email: $('#Email').val(),
+            PassW: $('#PassW').val(),
+            Addres: $('#Addres').val(),
+            birthday: $('#birthday').val(),
+            Gender: $('#Gender').val(),
+            Salary: $('#Salary').val(),
+            Admin_Status: $('#Admin_Status').val()
+        };
+        $.ajax({
+            url: "/Admin/Admin/Edit/",
+            contentType: "application/json;charset=UTF-8;",
+            type: "GET",
+            data: empObj,
+            dataType: "json",
+            success: function (result) {
+
+                alert("Sửa bản ghi thành công !");
+                location.reload("AddAdmin");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+    function Delele(ID) {
+        var ans = confirm("Bạn có chắc chắn muốn xóa dòng này không ?");
+        if (ans) {
+            $.ajax({
+                url: "/Admin/Admin/Delete/" + ID,
+                type: "POST",
+                contentType: "application/json;charset=UTF-8",
+                dataType: "json",
+                success: function (result) {
+                    alert("Xóa bản ghi thành công !");
+                    location.reload("tblCustomers");
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+</script>

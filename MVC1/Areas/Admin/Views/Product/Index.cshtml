@@ -1,0 +1,352 @@
+﻿@model IEnumerable<MVC1.Areas.Admin.Models.ProductModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+<link href="~/Content/StyleTest.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+
+<div>
+    <div class="row">
+        <div class="col-md-6 pull-left">
+            <h2>Danh sách sản phẩm</h2>
+            @*<input class="form-control" id="myInput" style="margin-bottom:10px" type="text" placeholder="Search..">*@
+            @Html.TextBox("Searching") <input type="submit" value="Searching" />
+        </div>
+        <div class="col-md-6 pull-right" style="padding-top:50px;padding-bottom:15px">
+            <button type="button" class="btn btn-info" onclick="functionUpdate()">Add New</button>
+            @*<button type="button" class="btn btn-primary" id="btnExport">Export To Excel</button>*@
+            <d class="tesst">
+                @*@Html.ActionLink("ExportToExcel", "ExportToExcel", "Catalog")*@
+            </d>
+        </div>
+    </div>
+    <table class="table table-bordered table-striped table-hover">
+        <tr>
+            <th>
+                ID
+            </th>
+            @*<th>
+                Loại Sản Phẩm
+            </th>*@
+            @*<th>
+                Nhà Cung Cấp
+            </th>*@
+            <th>
+                Tên Sản Phẩm
+            </th>
+            <th>
+                Gián  Bán
+            </th>
+            <th>
+                Giảm Giá
+            </th>
+            <th>
+                image
+            </th>
+            @*<th>
+                    List image
+                </th>*@
+            <th>
+                Số Lượng
+            </th>
+            <th>
+                Nội Dung
+            </th>
+            <th>
+                Trạng Thái
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product_id)
+                </td>
+                @*<td>
+                    @Html.DisplayFor(modelItem => item.Catalogs_name)
+                </td>*@
+                @*<td>
+                    @Html.DisplayFor(modelItem => item.Supplier_name)
+                </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product_name)
+                </td>
+                <td>
+                    $@Html.DisplayFor(modelItem => item.Product_Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product_Discount)%
+                </td>
+                <td>
+                    @*@Html.DisplayFor(modelItem => item.Product_image)*@
+                    <img src="@item.Product_image" width="70" />
+                </td>
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.Product_listimage)
+                        <img src="@item.Product_listimage" width="70" />
+                    </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product_number)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product_content)
+                </td>
+                @if (item.Product_Status == true)
+                {
+                    <td style="color:forestgreen">Hoạt động</td>
+                }
+                else
+                {
+                    <td style="color:orangered">Khóa</td>
+                }
+                <td>
+                    <button type="button" class="btn btn-danger" onclick="ShowEdit(@item.Product_id)">Edit</button>
+                    <button type="button" class="btn btn-warning" onclick="Delele(@item.Product_id)">Delete</button>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+<div id="AddAdmin" class="AddAdmin" style="display:none">
+    <div class="update-Admin">
+        <h3 id="titleAddnew">Add New</h3>
+        <h3 id="titleEdit" style="display:none">Edit</h3>
+        <table class="tbAdmin">
+            <tr>
+                <td>
+                    <label for="Product_id">ID</label>
+                    <input type="text" class="form-control" id="Product_id" placeholder="" disabled="disabled" />
+                </td>
+                <td>
+                    <label for="Catalogs_id">Loại hàng</label><br />
+                    @*<input type="text" class="form-control" id="Permission_id" placeholder="Quyền" />*@
+                    <select id="Catalogs_id" style="padding-left: 8px;width: 196px;border-radius: 5px;height:32px">
+                        <option value="1">iPhone</option>
+                        <option value="2">SamSung</option>
+                        <option value="3">Oppo</option>
+                        <option value="4">Xiaomi</option>
+                        <option value="5">Vivo</option>
+                        <option value="6">Realme</option>
+                        <option value="7">Vsmart</option>
+                        <option value="8">Nokia</option>
+                        <option value="9">Huawei</option>
+                        <option value="10">iTel</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Supplier_id">Nhà Cung Cấp</label><br />
+                    @*<input type="text" class="form-control" id="Permission_id" placeholder="Quyền" />*@
+                    <select id="Supplier_id" style="padding-left: 8px;width: 266px;border-radius: 5px;height:32px">
+                        <option value="1">FPT Shop</option>
+                        <option value="2">CellphoneS</option>
+                        <option value="3">Phương Oanh</option>
+                        <option value="4">Điện Máy Xanh</option>
+                        <option value="5">Hoàng Kiên</option>
+                        <option value="6">Viettel Store</option>
+                        <option value="7">Thế Giới Di Động</option>
+                        <option value="8">Di Động Thông Minh</option>
+                        <option value="9">Lazada</option>
+                        <option value="10">Shopee</option>
+                    </select>
+                </td>
+                <td>
+                    <label for="Product_name">Tên Sản Phẩm</label>
+                    <input type="text" class="form-control" id="Product_name" placeholder="Tên Sản Phẩm" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Product_Price">Giá</label>
+                    <input type="text" class="form-control" id="Product_Price" placeholder="Giá Sản Phẩm" />
+                </td>
+                <td>
+                    <label for="Product_Discount">Giảm Giá</label>
+                    <input type="text" class="form-control" id="Product_Discount" placeholder="Giảm Giá" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @*<label for="Product_image">image</label>
+                      <input type="text" class="form-control" id="Product_image" placeholder="ảnh sản phẩm" />*@
+                    <label for="Product_image">image</label>
+                    <input type="text" class="form-control" id="Product_image" style="display:none" placeholder="Product_image" />
+                    <input id="inp" type="file">
+
+                </td>
+                <td>
+                    <p id="Product_image"></p>
+                    <img id="img" height="50">
+                    @*<label for="Product_listimage">List image</label>
+                        <input type="text" class="form-control" id="Product_listimage" placeholder="List image" />*@
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Product_number">Số Lượng</label>
+                    <input type="text" class="form-control" id="Product_number" placeholder="Số Lượng" />
+                </td>
+                <td>
+                    <label for="Product_content">Nội dung</label>
+                    <input type="text" class="form-control" id="Product_content" placeholder="Nội dung" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Product_Status">Trạng Thái</label>
+                    <select id="Product_Status" style="padding: 5px;width: 120px;border-radius: 5px;">
+                        <option id="opTrue" value="true">Hoạt động</option>
+                        <option id="opFalse" value="false">Khóa</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button class="btn btn-info" id="Addnew" onclick="return Add()">Thêm Mới</button>
+                    <button class="btn btn-danger" id="Editnew" onclick="return Edit()" style="display:none;">Edit</button>
+                </td>
+                <td>
+                    <button class="btn btn-info" onclick="funcBack()">Hủy</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script>
+    function readFile() {
+        if (this.files && this.files[0]) {
+            var FR = new FileReader();
+            FR.addEventListener("load", function (e) {
+                document.getElementById("img").src = e.target.result;
+                document.getElementById("Product_image").value = e.target.result;
+            });
+            FR.readAsDataURL(this.files[0]);
+        }
+    }
+    document.getElementById("inp").addEventListener("change", readFile);
+    function functionUpdate() {
+        document.getElementById("AddAdmin").style.display = "block";
+    }
+    function funcBack() {
+        document.getElementById("AddAdmin").style.display = "none";
+    }
+    function Add() {
+        var empObj = {
+            //Admin_id: $('#Admin_id').val(),
+            Catalogs_id: $('#Catalogs_id').val(),
+            Supplier_id: $('#Supplier_id').val(),
+            Product_name: $('#Product_name').val(),
+            Product_Price: $('#Product_Price').val(),
+            Product_Discount: $('#Product_Discount').val(),
+            Product_image: $('#Product_image').val(),
+            Product_number: $('#Product_number').val(),
+            Product_content: $('#Product_content').val(),
+            Product_Status: $('#Product_Status').val()
+        };
+        $.ajax({
+            url: "/Admin/Product/Add",
+            data: JSON.stringify(empObj),
+            type: "POST",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                alert("Thêm mới thành công !");
+                location.reload("AddAdmin");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+        //document.getElementById("updateAdmin").style.display = "none";
+    }
+    function ShowEdit(ID) {
+        document.getElementById('AddAdmin').style.display = "block";
+        $('#Editnew').show();
+        $('#Addnew').hide();
+        $('#titleEdit').show();
+        $('#titleAddnew').hide();
+        $.ajax({
+            url: "/Admin/Product/ShowEdit/" + ID,
+            type: "GET",
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (result) {
+                $('#Product_id').val(result.Product_id),
+                    $('#Catalogs_id').val(result.Catalogs_id),
+                    $('#Supplier_id').val(result.Supplier_id),
+                    $('#Product_name').val(result.Product_name),
+                    $('#Product_Price').val(result.Product_Price),
+                    $('#Product_Discount').val(result.Product_Discount),
+                    $('#Product_image').val(result.Product_image),
+                    document.getElementById("img").src = result.Product_image,
+                    //$('#Product_listimage').val(Product_listimage),
+                    $('#Product_number').val(result.Product_number),
+                    $('#Product_content').val(result.Product_content),
+                    result.Product_Status === true ? document.getElementById('opTrue').selected = "selected" : document.getElementById('opFalse').selected = "selected",
+                    console.log(result.Product_Status)
+            }, error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+    function Edit() {
+
+        $('#Editnew').show();
+        $('#Addnew').hide();
+        var empObj = {
+            Product_id: $('#Product_id').val(),
+            Catalogs_id: $('#Catalogs_id').val(),
+            Supplier_id: $('#Supplier_id').val(),
+            Product_name: $('#Product_name').val(),
+            Product_Price: $('#Product_Price').val(),
+            Product_Discount: $('#Product_Discount').val(),
+            Product_image: $('#Product_image').val(),
+            //Product_listimage: $('#Product_listimage').val(),
+            Product_number: $('#Product_number').val(),
+            Product_content: $('#Product_content').val(),
+            Product_Status: $('#Product_Status').val()
+        };
+        $.ajax({
+            url: "/Admin/Product/Edit/",
+            data: JSON.stringify(empObj),
+            type: "POST",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                console.log($('#Product_Status').val())
+                alert("Sửa bản ghi thành công !");
+                location.reload("AddAdmin");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+    function Delele(ID) {
+        var ans = confirm("Bạn có chắc chắn muốn xóa dòng này không ?");
+        if (ans) {
+            $.ajax({
+                url: "/Admin/Product/Delete/" + ID,
+                type: "POST",
+                contentType: "application/json;charset=UTF-8",
+                dataType: "json",
+                success: function (result) {
+                    alert("Xóa bản ghi thành công !");
+                    location.reload("tblCustomers");
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+</script>

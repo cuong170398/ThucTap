@@ -1,0 +1,284 @@
+﻿@model IEnumerable<MVC1.Areas.Admin.Models.CustomerModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+<link href="~/Content/StyleTest.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<div>
+    <div class="row">
+        <div class="col-md-6 pull-left">
+            <h2>Danh sách khách hàng</h2>
+            @*<input class="form-control" id="myInput" style="margin-bottom:10px" type="text" placeholder="Search..">*@
+            @Html.TextBox("Searching") <input type="submit" value="Searching" />
+        </div>
+        <div class="col-md-6 pull-right" style="padding-top:50px;padding-bottom:15px">
+            <button type="button" class="btn btn-info" onclick="functionUpdate()">Add New</button>
+            @*<button type="button" class="btn btn-primary" id="btnExport">Export To Excel</button>*@
+            <d class="tesst">
+                @*@Html.ActionLink("ExportToExcel", "ExportToExcel", "Catalog")*@
+            </d>
+        </div>
+    </div><table class="table table-bordered table-striped table-hover" id="tblCustomers">
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Tên
+            </th>
+            <th>
+                Số điện thoại
+            </th>
+            <th>
+                Địa chỉ
+            </th>
+            <th>
+                Email
+            </th>
+            @*<th>
+                Mật khẩu
+            </th>*@
+            <th>
+                Ngày sinh
+            </th>
+            <th>
+                Giới tính
+            </th>
+            <th>
+                Trạng thái
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Customer_id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Customer_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Customer_phone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Customer_Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Customer_Email)
+            </td>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.Customer_Pass)
+            </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.Customer_Birthday)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Customer_Gender)
+            </td>
+            @if (item.Customer_Status == true)
+            {
+                <td style="color:forestgreen">Hoạt động</td>
+            }
+            else
+            {
+                <td style="color:orangered">Khóa</td>
+            }
+            <td>
+                <button type="button" class="btn btn-danger" onclick="ShowEdit(@item.Customer_id)">Edit</button>
+                <button type="button" class="btn btn-warning" onclick="Delete(@item.Customer_id)">Xóa</button>
+            </td>
+        </tr>
+        }
+
+    </table>
+</div>
+
+<div id="AddAdmin" class="AddAdmin" style="display:none">
+    <div class="update-Admin">
+        <h3 id="titleAddnew">Add New</h3>
+        <h3 id="titleEdit" style="display:none">Edit</h3>
+        <table class="tbAdmin">
+            <tr>
+                <td>
+                    <label for="Customer_id">ID</label>
+                    <input type="text" class="form-control" id="Customer_id" placeholder="" disabled="disabled" />
+                </td>
+                <td>
+                    <label for="Customer_name">Tên</label>
+                    <input type="text" class="form-control" id="Customer_name" placeholder="Tên" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Customer_phone">Số điện thoại</label>
+                    <input type="text" class="form-control" id="Customer_phone" placeholder="Số điện thoại" />
+                </td>
+                <td>
+                    <label for="Customer_Address">Địa chỉ</label>
+                    <input type="text" class="form-control" id="Customer_Address" placeholder="Địa chỉ" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Customer_Email">Email</label>
+                    <input type="text" class="form-control" id="Customer_Email" placeholder="Email" />
+                </td>
+                <td>
+                    <label for="Customer_Pass">Mật khẩu</label>
+                    <input type="password" class="form-control" id="Customer_Pass" placeholder="Mật khẩu" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Customer_Birthday">Ngày sinh</label>
+                    <input type="text" class="form-control" id="Customer_Birthday" placeholder="Ngày sinh" />
+                </td>
+                <td>
+                    <label for="Customer_Gender">Giới tính</label>
+                    <input type="text" class="form-control" id="Customer_Gender" placeholder="Giới tính" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Customer_Status">Trạng Thái</label>
+                    <select id="Customer_Status" style="padding: 5px;width: 120px;border-radius: 5px;">
+                        <option id="opTrue" value="true">Hoạt động</option>
+                        <option id="opFalse" value="false">Khóa</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button class="btn btn-info" id="Addnew" onclick="return Add()">Thêm Mới</button>
+                    <button class="btn btn-danger" id="Editnew" onclick="return Edit()" style="display:none;">Edit</button>
+                </td>
+                <td>
+                    <button class="btn btn-xam" onclick="funcBack()">Hủy</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script>
+    function functionUpdate() {
+        document.getElementById("AddAdmin").style.display = "block";
+    }
+    function funcBack() {
+        document.getElementById("AddAdmin").style.display = "none";
+    }
+    function Add() {
+        var empObj = {
+            //Customer_id: $('#Customer_id').val(),
+            Customer_name: $('#Customer_name').val(),
+            Customer_phone: $('#Customer_phone').val(),
+            Customer_Address: $('#Customer_Address').val(),
+            Customer_Email: $('#Customer_Email').val(),
+            Customer_Pass: $('#Customer_Pass').val(),
+            Customer_Birthday: $('#Customer_Birthday').val(),
+            Customer_Gender: $('#Customer_Gender').val(),
+            Customer_Status: $('#Customer_Status').val()
+        };
+        $.ajax({
+            url: "/Admin/Customer/Add",
+            contentType: "application/json;charset=UTF-8",
+            type: "GET",
+            data: empObj,
+            datatype: "json",
+            success: function (result) {
+                alert("Thêm bản ghi thành công !");
+                location.reload("AddAdmin");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        })
+    }
+    function ShowEdit(ID) {
+        document.getElementById('AddAdmin').style.display = "block";
+        $('#Editnew').show();
+        $('#Addnew').hide();
+        $('#titleEdit').show();
+        $('#titleAddnew').hide();
+        $.ajax({
+            url: "/Admin/Customer/ShowEdit/" + ID,
+            type: "GET",
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (result) {
+                var dt = new Date(parseInt(result.Customer_Birthday.replace('/Date(', '')));
+                var dtFinal = AddLeadingZezos(dt.getMonth() + 1, 2) + '/' +
+                    AddLeadingZezos(dt.getDate(), 2) + '/' +
+                    AddLeadingZezos(dt.getFullYear(), 4);
+                $('#Customer_id').val(result.Customer_id),
+                    $('#Customer_name').val(result.Customer_name),
+                    $('#Customer_phone').val(result.Customer_phone),
+                    $('#Customer_Address').val(result.Customer_Address),
+                    $('#Customer_Email').val(result.Customer_Email),
+                    $('#Customer_Pass').val(result.Customer_Pass),
+                    $('#Customer_Birthday').val(dtFinal),
+                    $('#Customer_Gender').val(result.Customer_Gender),
+                    result.Customer_Status === true ? document.getElementById('opTrue').selected = "selected" : document.getElementById('opFalse').selected = "selected",
+                    console.log(result.Customer_Status)
+            }, error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+    function AddLeadingZezos(number, Size) {
+        var s = "0000" + number;
+        return s.substr(s.length - Size);
+    }
+    function Edit() {
+        var empObj = {
+                Customer_id: $('#Customer_id').val(),
+                Customer_name: $('#Customer_name').val(),
+                Customer_phone: $('#Customer_phone').val(),
+                Customer_Address: $('#Customer_Address').val(),
+                Customer_Email: $('#Customer_Email').val(),
+                Customer_Pass: $('#Customer_Pass').val(),
+                Customer_Birthday: $('#Customer_Birthday').val(),
+                Customer_Gender: $('#Customer_Gender').val(),
+                Customer_Status: $('#Customer_Status').val()
+            };
+            $.ajax({
+                url: "/Admin/Customer/Edit",
+                contentType: "application/json;charset=UTF-8",
+                type: "GET",
+                data: empObj,
+                datatype: "json",
+                success: function (result) {
+                    alert("Sửa bản ghi thành công!");
+                    location.reload("AddAdmin");
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            })
+    }
+    function Delete(ID) {
+        var ans = confirm("Bạn có chắc chắn muốn xóa dòng này không!");
+        if (ans) {
+            $.ajax({
+                url: "/Admin/Customer/Delete/" + ID,
+                type:"POST",
+                contentType:"application/json;charset:UTF-8",
+                dataType: "json",
+                success: function (result) {
+                    alert("Xóa bản ghi thành công!");
+                    location.reload("tblCustomers");
+                },
+                Error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            })
+        }
+    }
+</script>

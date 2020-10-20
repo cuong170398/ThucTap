@@ -1,0 +1,50 @@
+﻿@model MVC1.Models.LoginMemberModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="~/Content/Login.css" rel="stylesheet" />
+</head>
+<body>
+    @*@using (Html.BeginForm("LoginMember", "Loginmember"))
+    {
+        @Html.ValidationMessageFor(model => model.Customer_Email)
+        <div>@Html.LabelFor(model => model.Customer_Email)</div>
+        <div>@Html.TextBoxFor(model => model.Customer_Email)</div>
+        @Html.ValidationMessageFor(model => model.Customer_Pass)
+        <div>@Html.LabelFor(model => model.Customer_Pass)</div>
+        <div>@Html.TextBoxFor(model => model.Customer_Pass)</div>
+        <input type="submit" value="Đăng nhập" />
+    }*@
+    
+        <form action="LoginMember" method="post">
+            <div class="login-box">
+                <div class="login-heading">
+                    <h4>Login - Admin</h4>
+                </div>
+                <div class="login-body">
+                    <div class="form-group">
+                        <label class="control-label">Email</label>
+                        <input type="text" name="Customer_Email" id="Customer_Email" placeholder="Nhập Email" class="form-control" />
+                        @Html.ValidationMessageFor(Model => Model.Customer_Email)
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Mật Khẩu</label>
+                        <input type="password" name="Customer_Pass" id="Customer_Pass" placeholder="Nhập Mật Khẩu" class="form-control" />
+                    </div>
+                </div>
+                <div class="login-footer">
+                    <button>Login</button>
+                    <label>@Html.ViewData["Message"]</label>
+                    <div><h1>@Html.ViewBag.Message </h1></div>
+                </div>
+            </div>
+        </form>
+</body>
+</html>

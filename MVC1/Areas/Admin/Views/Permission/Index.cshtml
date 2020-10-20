@@ -1,0 +1,201 @@
+﻿@model IEnumerable<MVC1.Areas.Admin.Models.PermissionModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+<link href="~/Content/StyleTest.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+
+<div class="row">
+    <div class="col-md-6 pull-left">
+        <h2>Danh sách quyền</h2>
+        @*<input class="form-control" id="myInput" style="margin-bottom:10px" type="text" placeholder="Search..">*@
+        @Html.TextBox("Searching") <input type="submit" value="Searching" />
+    </div>
+    <div class="col-md-6 pull-right" style="padding-top:50px;padding-bottom:15px">
+        <button type="button" class="btn btn-info" onclick="functionUpdate()">Add New</button>
+        @*<button type="button" class="btn btn-primary" id="btnExport">Export To Excel</button>*@
+        <d class="tesst">
+            @*@Html.ActionLink("ExportToExcel", "ExportToExcel", "Catalog")*@
+        </d>
+    </div>
+</div>
+
+<table class="table table-bordered table-striped table-hover" id="tblCustomers">
+    <tr>
+        <th>
+            ID
+        </th>
+        <th>
+            Tên Quền
+        </th>
+        <th>
+            Trạng Thái
+        </th>
+        <th>
+            Action
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Permission_id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Permision_name)
+            </td>
+            @if (item.Permission_Status == true)
+            {
+                <td style="color:forestgreen">Hoạt động</td>
+            }
+            else
+            {
+                <td style="color:orangered">Khóa</td>
+            }
+            <td>
+                <button type="button" class="btn btn-danger" onclick="ShowEdit(@item.Permission_id)">Edit</button>
+                <button type="button" class="btn btn-warning" onclick="Delete(@item.Permission_id)">Delete</button>
+            </td>
+        </tr>
+    }
+</table>
+<div id="AddAdmin" class="AddAdmin" style="display:none">
+    <div class="update-Admin">
+        <h3 id="titleAddnew">Add New</h3>
+        <h3 id="titleEdit" style="display:none">Edit</h3>
+        <table class="tbAdmin">
+            <tr>
+                <td>
+                    <label for="Permission_id">ID</label>
+                </td>
+                <td>
+                    <input type="text" class="form-control" id="Permission_id" placeholder="" disabled="disabled" />
+                </td>
+            <tr>
+                <td>
+                    <label for="Permision_name">Tên Quyền</label>
+                </td>
+                <td>
+                    <input type="text" class="form-control" id="Permision_name" placeholder="Tên Quyền" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Permission_Status">Trạng Thái</label>
+                </td>
+                <td>
+                    <select id="Permission_Status" style="padding: 5px;width: 195px;border-radius: 5px;">
+                        <option id="opTrue" value="true">Hoạt động</option>
+                        <option id="opFalse" value="false">Khóa</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button class="btn btn-info" id="Addnew" onclick="return Add()">Thêm Mới</button>
+                    <button class="btn btn-danger" id="Editnew" onclick="return Edit()" style="display:none;">Edit</button>
+                </td>
+                <td>
+                    <button class="btn btn-xam" onclick="funcBack()">Hủy</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script>
+    function functionUpdate() {
+        document.getElementById("AddAdmin").style.display = "block";
+    }
+    function funcBack() {
+        document.getElementById("AddAdmin").style.display = "none";
+    }
+    function Add() {
+        var empObj = {
+            //Permission_id: $('#Permission_id').val(),
+            Permision_name: $('#Permision_name').val(),
+            Permission_Status: $('#Permission_Status').val()
+        };
+        $.ajax({
+            url: "/Admin/Permission/Add",
+            contentType: "application/json;charset=UTF-8",
+            type: "GET",
+            data: empObj,
+            dataType: "json",
+            success: function (result) {
+                alert("Thêm mới thành công !");
+                location.reload("AddAdmin");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+    function ShowEdit(ID) {
+        document.getElementById('AddAdmin').style.display = "block";
+        $('#Editnew').show();
+        $('#Addnew').hide();
+        $('#titleEdit').show();
+        $('#titleAddnew').hide();
+        $.ajax({
+            url: "/Admin/Permission/ShowEdit/" + ID,
+            type: "GET",
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            success: function (result) {
+                $('#Permission_id').val(result.Permission_id),
+                    $('#Permision_name').val(result.Permision_name),
+                    result.Permission_Status === true ? document.getElementById('opTrue').selected = "selected" : document.getElementById('opFalse').selected = "selected",
+                    console.log(result.Permission_Status)
+            }, error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+    function Edit() {
+        $('#Editnew').show();
+        $('#Addnew').hide();
+        var empObj = {
+            Permission_id: $('#Permission_id').val(),
+            Permision_name: $('#Permision_name').val(),
+            Permission_Status: $('#Permission_Status').val()
+        };
+        $.ajax({
+            url: "/Admin/Permission/Edit/",
+            contentType: "application/json;charset=UTF-8;",
+            type: "GET",
+            data: empObj,
+            dataType: "json",
+            success: function (result) {
+
+                alert("Sửa bản ghi thành công !");
+                location.reload("AddAdmin");
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+    function Delete(ID) {
+        var ans = confirm("Bạn có chắc chắn muốn xóa dòng này không ?");
+        if (ans) {
+            $.ajax({
+                url: "/Admin/Permission/Delete/" + ID,
+                type: "GET",
+                contentType: "application/json;charset=UTF-8",
+                dataType: "json",
+                success: function (result) {
+                    alert("Xóa bản ghi thành công !");
+                    location.reload("tblCustomers");
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+</script>
