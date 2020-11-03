@@ -4,4 +4,33 @@
 }
 
 <h2>sdasdas</h2>
+------------------------------------
+<div id="FileUploaders">
+            <p>
+                <input type="file" id="FileUploader" name="FileUploader1" style="padding:0px; margin:0px;"/>
+            </p>
+         </div>  
+            <a href="#" id="addUploader" style="font-size:12pt;color:Blue;text-decoration:underline;padding-bottom:15pt;">Add Another</a>
+           <br />
+            <asp:Button ID="btnUploadAll" runat="server" Text= "Upload Files" 
+               onclick="btnUploadAll_Click" />
 
+<script language ="javascript" type="text/javascript">
+        $(function () {
+            var scntDiv = $('#FileUploaders');
+            var i = $('#FileUploaders p').size() + 1;
+
+            $('#addUploader').live('click', function () {
+                $('<p><input type= "file" id="FileUploader ' + i + '" name="FileUploader ' + i + '" /></label><a href="#" id="removeUploader">Remove</a></p>').appendTo(scntDiv);
+                i++;
+                return false;
+            });
+            $('#removeUploader').live('click', function () {
+                if (i > 2) {
+                    $(this).parents('p').remove();
+                    i--;
+                }
+                return false;
+            });
+        });
+    </script>
